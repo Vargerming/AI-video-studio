@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Efficient Studio v2.6 — Этап 2 (Добавления)</title>
+  <style>
+    body { font-family: Arial, Helvetica, sans-serif; margin: 20px; color: #111; }
+    h1 { font-size: 20px; margin-bottom: 8px; }
+    table { border-collapse: collapse; width: 100%; margin-bottom: 24px; }
+    th, td { border: 1px solid #bbb; padding: 8px 10px; text-align: left; vertical-align: top; }
+    th { background: #f2f2f2; font-weight: 600; }
+    .module-title { background:#e9f5ff; font-weight:700; }
+    .note { font-size: 13px; color: #444; }
+  </style>
+</head>
+<body>
+
+  <h1>Efficient Studio v2.6 — Зафиксированные добавления (Этап 2)</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Модуль</th>
+        <th>Подблок</th>
+        <th>Краткое описание</th>
+        <th>Статус</th>
+      </tr>
+    </thead>
+    <tbody>
+
+      <tr>
+        <td class="module-title" rowspan="7">Multilingual Support (EN, DE, FR, DA, ES)</td>
+        <td>Language Orchestration Module</td>
+        <td>Координация потоков перевода между системами; управление приоритетами и синхронизацией языков.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Translation Engine</td>
+        <td>Машинный перевод и локализация контента (интеграция MT + пост-правка при необходимости).</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Voice &amp; Speech Layer</td>
+        <td>Генерация речи (TTS), распознавание речи (ASR), голосовые профили и маршруты озвучки.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Subtitles &amp; Captions Generator</td>
+        <td>Авто- и ручная генерация субтитров/тайм-кодов для всех поддерживаемых языков.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Multilingual GUI Layer</td>
+        <td>Интерфейс управления с переключением языка, локализованные элементы UI/UX.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Analytics Integration</td>
+        <td>Метрики по использованию языков, KPI качества перевода, отчёты по озвучке и субтитрам.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Translation Workflow Dashboard</td>
+        <td>Панель управления процессами перевода, очередями, ревью и статусами задач.</td>
+        <td>Зафиксировано</td>
+      </tr>
+
+      <tr>
+        <td class="module-title" rowspan="4">Production Control Layer</td>
+        <td>Segment Quality Control System (30s Rule + Final Review)</td>
+        <td>Система контроля качества сегментов с правилом 30 секунд и финальным просмотром.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Fragment QC (≤30s)</td>
+        <td>Ручная проверка коротких фрагментов (до 30 сек) оператором; чек-листы качества.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Batch Management</td>
+        <td>Управление партиями фрагментов: создание батчей, назначение статусов проверки, трекинг прогресса.</td>
+        <td>Зафиксировано</td>
+      </tr>
+      <tr>
+        <td>Final Combined Review &amp; Operator Notes System</td>
+        <td>Финальный просмотр объединённого материала; система заметок/комментариев операторов для исправлений.</td>
+        <td>Зафиксировано</td>
+      </tr>
+
+    </tbody>
+  </table>
+
+  <h1>Интеграция с существующей архитектурой (основные блоки)</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Существующий блок</th>
+        <th>Роль / Краткое замечание</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Image-to-Video</td><td>Генерация и трансформация визуального контента.</td></tr>
+      <tr><td>Orchestration &amp; Agents</td><td>Оркестрация рабочих процессов и агенты автоматизации.</td></tr>
+      <tr><td>GUI Control Panel</td><td>Главная панель управления системой.</td></tr>
+      <tr><td>Audio Layer</td><td>Обработка звука, микширование, TTS/ASR интеграции.</td></tr>
+      <tr><td>Analytics</td><td>Сбор метрик, дашборды, логирование.</td></tr>
+      <tr><td>Local GPU Node</td><td>Локальная обработка на GPU для ускорения ML/рендеринга.</td></tr>
+      <tr><td>Cloud Storage</td><td>Хранение медиаконтента и версий.</td></tr>
+      <tr><td>Performance Dashboard</td><td>Мониторинг производительности и загрузки ресурсов.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="note">Примечание: все элементы выше — те, что были зафиксированы как добавления на втором этапе. Статус отмечен как «Зафиксировано» согласно последней сохранённой структуре.</p>
+
+</body>
+</html>

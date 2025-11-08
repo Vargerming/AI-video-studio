@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"/>
+  <title>Мануал-Библия v2.1 — Studio (Windows Laptop / Rented Linux CPU / Rented Linux GPU / Hybrid)</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <style>
+    :root{--accent:#0b3b5b;--muted:#666;--card:#fff;}
+    body{font-family: Inter, Arial, Helvetica, sans-serif; margin:18px; color:#111; background:linear-gradient(#ffffff, #f7f9fb);}
+    header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+    h1{margin:0;color:var(--accent);font-size:1.4rem;}
+    nav{margin-left:auto;}
+    nav a{margin-left:6px;text-decoration:none;padding:6px 10px;border-radius:6px;background:var(--accent);color:#fff;font-size:0.85rem;}
+    section{background:var(--card);border:1px solid #e6e9ee;padding:14px;border-radius:10px;margin-bottom:14px;}
+    h2{color:var(--accent);margin-top:0;}
+    .node{border:1px dashed #e0e4ea;padding:10px;border-radius:8px;margin:8px 0;background:linear-gradient(#fff,#fbfcff);}
+    .small{font-size:0.9rem;color:var(--muted);}
+    .btn{display:inline-block;padding:8px 12px;border-radius:6px;background:var(--accent);color:#fff;text-decoration:none;cursor:pointer;border:none;}
+    label{display:block;margin-top:8px;font-weight:600;}
+    input[type="text"], textarea, select {width:100%;padding:8px;border-radius:6px;border:1px solid #dcdfe6;margin-top:6px;}
+    input[readonly]{background:#f6f8fb;}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    pre{background:#0b1220;color:#e6f0ff;padding:8px;border-radius:6px;overflow:auto;font-size:0.9rem;}
+    table{width:100%;border-collapse:collapse;}
+    th,td{padding:6px;border:1px solid #e6e9ee;text-align:left;}
+    .search{margin-bottom:8px;}
+    footer{font-size:0.9rem;color:var(--muted);margin-top:18px;}
+    .pass{color:green;font-weight:700;}
+    .fail{color:red;font-weight:700;}
+    .kbd{background:#f4f6fa;padding:2px 6px;border-radius:4px;font-family:monospace;}
+    .danger{background:#fff4f4;border:1px solid #ffd1d1;padding:8px;border-radius:6px;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Мануал-Библия v2.1 — Studio</h1>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#laptop">Laptop (Windows)</a>
+      <a href="#cpu">Rented CPU (Linux)</a>
+      <a href="#gpu">Rented GPU (Linux)</a>
+      <a href="#hybrid">Hybrid</a>
+      <a href="#automation">Automation</a>
+      <a href="#checksum">Checksum</a>
+      <a href="#troubleshoot">Troubleshooting</a>
+      <a href="#logs">Журналы</a>
+    </nav>
+  </header>
+
+  <section id="overview">
+    <h2>Краткое описание / Quick overview</h2>
+    <p class="small">Русский язык основной. Английские названия узлов в скобках: Laptop (<em>Control Laptop</em>), Rented CPU (<em>Rented CPU Node</em>), Rented GPU (<em>Rented GPU Node</em>), NAS/Storage (<em>NAS/Storage</em>).</p>
+    <p>Структура файла: для каждого узла — что делаем, полный список компонентов, пошаговая сборка для не‑программиста, контрольные тесты, и — ключевой момент — подробный план действий при сбое. Также включены автоматизация (Windows Task Scheduler + Linux systemd/cron), встроенная проверка контрольных сумм (MD5 / SHA‑256), и готовые шаблоны логов с экспортом в JSON.</p>
+  </section>
+
+  <section id="laptop">
+    <h2>1. Laptop — Windows (Control Laptop)</h2>
+    <div class="node">
+      <h3>Роль ноутбука</h3>
+      <ul>
+        <li>Управление OBS (preview, scenes), работа с аудиоинтерфейсом и микрофоном.</li>
+        <li>Локальная запись и первичная проверка AV перед отправкой.</li>
+        <li>Запуск синхронизации на CPU/GPU, мониторинг задач и журналов.</li>
+      </ul>
+    </div>
+
+    <div class="node">
+      <h3>Полный список компонентов</h3>
+      <ul>
+        <li>OBS Studio (OBS)</li>
+        <li>Audio Interface (XLR -> USB) — (Audio Interface)</li>
+        <li>Capture Device (HDMI->USB / SDI) — (Capture Device)</li>
+        <li>File Sync: WinSCP / rsync via WSL / Resilio / Syncthing — (File Sync)</li>
+        <li>Monitoring: Task Manager, GPU-Z (если есть discrete GPU), HWMonitor — (Monitoring)</li>
+      </ul>
+    </div>
+
+    <div class="node">
+      <h3>Пошаговая сборка и проверка (для не‑программиста)</h3>
+      <ol>
+        <li>Подключи аудиоинтерфейс, проверь драйверы (Device Manager → Sound, video and game controllers).</li>
+        <li>Установи OBS (с официального сайта) и плагин OBS Websocket, если хочешь remote control.</li>
+        <li>Настрой локальную папку для записей: например, <kbd class="kbd">C:\studio\recordings</kbd>. Доступно минимум 100 GB для записи.</li>
+        <li>Проверь, что Windows не ставит устройство в режим сна (Power Settings → Never sleep).</li>
+        <li>Сделай тест‑запись 2 минуты и проиграй файл — проверь звук и картинку.</li>
+      </ol>
+    </div>
+
+    <div class="node">
+      <h3>Контрольные тесты (Laptop)</h3>
+      <ol>
+        <li>OBS preview: есть изображение → <span id="t_obs" class="fail">FAIL</span></li>
+        <li>Audio input detected & peaks ≤ -6 dB → <span id="t_audio" class="fail">FAIL</span></li>
+        <li>Local write speed ≥ 80 MB/s → <span id="t_disk" class="fail">FAIL</span></li>
+        <li>Can upload small file to CPU node (10 MB) via WinSCP/pscp → <span id="t_upload" class="fail">FAIL</span></li>
+      </ol>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="mark('t_obs')">OBS PASS</button>
+        <button class="btn" onclick="mark('t_audio')">Audio PASS</button>
+        <button class="btn" onclick="mark('t_disk')">Disk PASS</button>
+        <button class="btn" onclick="mark('t_upload')">Upload PASS</button>
+      </div>
+    </div>
+
+    <div class="node">
+      <h3>Что делать при сбое (Laptop) — подробные действия</h3>
+      <ol>
+        <li><strong>OBS не запускается / падает:</strong>
+          <ul>
+            <li>Сохрани логи: Help → Log Files → Show Log Files. Скопируй последний файл в <kbd class="kbd">C:\studio\logs</kbd>.</li>
+            <li>Запусти OBS с ключом <kbd class="kbd">--verbose</kbd> и посмотри вывод.</li>
+            <li>Временно включи локальную запись на другом диске (USB SSD) и продолжай сессии — восстановишь позже.</li>
+          </ul>
+        </li>
+        <li><strong>Проблемы с аудио:</strong>
+          <ul>
+            <li>Поменяй USB‑порт (иногда питание нестабильно). Попробуй другой кабель.</li>
+            <li>Отключи эксклюзивный режим: Sound → Device Properties → Advanced → Uncheck "Allow applications to take exclusive control".</li>
+            <li>Если фоновой шум — попробуй другой микрофон/кабель, включи поп‑фильтр и noise gate в OBS.</li>
+          </ul>
+        </li>
+        <li><strong>Медленная запись / диск не успевает:</strong>
+          <ul>
+            <li>Переключись на другой диск (NVMe / внешний SSD по USB 3.1/3.2).</li>
+            <li>Снижай битрейт записи до приемлемого уровня (пример: 8–10 Mbps для 1080p).</li>
+          </ul>
+        </li>
+        <li><strong>Не могу отправить файл на CPU:</strong>
+          <ul>
+            <li>Проверь соединение интернет/ethernet. Временное решение — копирование на внешний SSD и физическая передача.</li>
+            <li>Пробуй pscp (Putty) или WinSCP; смотри права на папку назначения.</li>
+          </ul>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="cpu">
+    <h2>2. Rented CPU Node — Linux (Encoding & Orchestration)</h2>
+    <div class="node">
+      <h3>Роль ноды</h3>
+      <ul>
+        <li>Автоматическая перекодировка (ffmpeg), препроцессинг, генерация субтитров (Whisper/light), orchestration (systemd/cron).</li>
+      </ul>
+    </div>
+
+    <div class="node">
+      <h3>Быстрая инструкция для доступа (non-dev)</h3>
+      <ol>
+        <li>Получить SSH доступ: обычно <kbd class="kbd">ssh studio@<ip-address></kbd> с ключом или паролем.</li>
+        <li>Проверить место: <kbd class="kbd">df -h</kbd>. Создать папки: <kbd class="kbd">/studio/incoming</kbd>, <kbd class="kbd">/studio/outgoing</kbd>.</li>
+        <li>Установить ffmpeg: <kbd class="kbd">sudo apt update && sudo apt install ffmpeg -y</kbd>.</li>
+        <li>Запустить тест перекодировки: <kbd class="kbd">ffmpeg -i sample.mp4 -c:v libx264 -preset veryfast -b:v 4000k out.mp4</kbd>.</li>
+      </ol>
+    </div>
+
+    <div class="node">
+      <h3>Контрольные тесты (CPU)</h3>
+      <ol>
+        <li>SSH доступ → <span id="c_ssh" class="fail">FAIL</span></li>
+        <li>Свободно ≥ 50 GB → <span id="c_disk" class="fail">FAIL</span></li>
+        <li>ffmpeg перекодировал без ошибок → <span id="c_ffmpeg" class="fail">FAIL</span></li>
+        <li>Transcription (Whisper) запустился → <span id="c_trans" class="fail">FAIL</span></li>
+      </ol>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="mark('c_ssh')">SSH PASS</button>
+        <button class="btn" onclick="mark('c_disk')">Disk PASS</button>
+        <button class="btn" onclick="mark('c_ffmpeg')">ffmpeg PASS</button>
+        <button class="btn" onclick="mark('c_trans')">Transcription PASS</button>
+      </div>
+    </div>
+
+    <div class="node">
+      <h3>Что делать при сбое (CPU)</h3>
+      <ol>
+        <li><strong>Нет SSH:</strong> проверь IP в панели провайдера, security group / firewall, попробуй консоль провайдера (web console).</li>
+        <li><strong>Мало места:</strong> временно перемести старые файлы на NAS или внешний диск; очисти <kbd class="kbd">/tmp</kbd>.</li>
+        <li><strong>ffmpeg падает:</strong> возьми лог <kbd class="kbd">/var/log/studio/encode.log</kbd>, запусти вручную команду и прочитай stderr; возможно, битрейт/кодек не поддерживается.</li>
+        <li><strong>Автозапуск не работает:</strong> проверь systemd unit: <kbd class="kbd">sudo systemctl status studio-encode</kbd>, <kbd class="kbd">journalctl -u studio-encode -n 200</kbd>.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="gpu">
+    <h2>3. Rented GPU Node — Linux (Rendering / AI / NVENC)</h2>
+    <div class="node">
+      <h3>Роль ноды</h3>
+      <ul>
+        <li>Heavy render (Blender), AI inference (PyTorch/TensorFlow), hardware encode (h264_nvenc / hevc_nvenc).</li>
+      </ul>
+    </div>
+
+    <div class="node">
+      <h3>Быстрая инструкция</h3>
+      <ol>
+        <li>SSH доступ: <kbd class="kbd">ssh gpuuser@<ip></kbd>.</li>
+        <li>Проверить драйверы: <kbd class="kbd">nvidia-smi</kbd>. Показанные GPU и память — baseline.</li>
+        <li>Запустить тест NVENC: <kbd class="kbd">ffmpeg -i in.mp4 -c:v h264_nvenc -b:v 6000k out_nvenc.mp4</kbd>.</li>
+      </ol>
+    </div>
+
+    <div class="node">
+      <h3>Контрольные тесты (GPU)</h3>
+      <ol>
+        <li>nvidia-smi видит GPU → <span id="g_smi" class="fail">FAIL</span></li>
+        <li>Простой render/inference отработал → <span id="g_render" class="fail">FAIL</span></li>
+        <li>NVENC кодирование без артефактов → <span id="g_nvenc" class="fail">FAIL</span></li>
+        <li>Температура ≤85°C под нагрузкой → <span id="g_temp" class="fail">FAIL</span></li>
+      </ol>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="mark('g_smi')">nvidia-smi PASS</button>
+        <button class="btn" onclick="mark('g_render')">Render PASS</button>
+        <button class="btn" onclick="mark('g_nvenc')">NVENC PASS</button>
+        <button class="btn" onclick="mark('g_temp')">Temp OK</button>
+      </div>
+    </div>
+
+    <div class="node">
+      <h3>Что делать при сбое (GPU)</h3>
+      <ol>
+        <li><strong>GPU не виден:</strong> проверить драйверы, перезапустить nvidia-persistenced: <kbd class="kbd">sudo systemctl restart nvidia-persistenced</kbd>. Посмотреть <kbd class="kbd">dmesg</kbd> на наличие ошибок PCIe.</li>
+        <li><strong>Артефакты в кадре:</strong> попробовать другой preset NVENC, обновить драйвер, если проблема постоянна — переключиться на CPU render.</li>
+        <li><strong>Перегрев:</strong> уменьшить load, увеличить вентилятор или сменить инстанс.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="hybrid">
+    <h2>4. Hybrid — интеграция всех узлов и recovery plan</h2>
+    <div class="node">
+      <h3>Flow: capture → preprocess → render → finalize → store</h3>
+      <ol>
+        <li>Запись на Laptop → локальная копия.</li>
+        <li>Копирование на Rented CPU (/studio/incoming).</li>
+        <li>CPU делает preprocessing (audio cleanup, trim), обеспечивает субтитры.</li>
+        <li>Heavy tasks — отправляются на GPU node.</li>
+        <li>Финализация на CPU, копирование на NAS и backup на внешний диск.</li>
+      </ol>
+    </div>
+
+    <div class="node">
+      <h3>Priority Recovery Playbook — что делать сразу</h3>
+      <ol>
+        <li><strong>Определи зону сбоя:</strong> Laptop / CPU / GPU / Network — см. журналы и timestamps.</li>
+        <li><strong>Если во время записи Laptop:</strong> переключись на local backup recording (второй диск) и уведомь команду.</li>
+        <li><strong>Если CPU упал:</strong> переключай очереди на другой рабочий инстанс, если есть; если нет — manual fallback: CPU делает только muxing, а GPU — render (если доступен) или наоборот.</li>
+        <li><strong>Если GPU недоступен:</strong> уменьшить качество и запустить CPU render (дольше, но спасёт сессию).</li>
+        <li>Заполнить интеграционный лог с временем и шагами, пометить для post-mortem.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="automation">
+    <h2>5. Automation — Windows Task Scheduler + Linux systemd/cron примеры</h2>
+    <div class="node">
+      <h3>Windows — примеры .bat и schtasks</h3>
+      <p class="small">Подходит для твоего ноутбука на Windows: автоматический бэкап, запуск синка и health-checks.</p>
+      <pre>REM backup-recordings.bat
+@echo off
+set SRC=C:\studio\recordings
+set DST=\\nas\studio_backups\%DATE:~0,10%
+robocopy "%SRC%" "%DST%" /MIR /Z /R:2 /W:5
+echo %DATE% %TIME% - backup finished >> C:\studio\logs\backup.log</pre>
+
+      <pre>REM Register scheduled task (run every 6 hours)
+schtasks /Create /SC HOURLY /MO 6 /TN "StudioBackup" /TR "C:\studio\backup-recordings.bat" /RL HIGHEST /F</pre>
+
+      <p class="small">Пояснение: <kbd class="kbd">robocopy</kbd> лучше для Windows сетевых копий (устойчивее, чем xcopy).</p>
+    </div>
+
+    <div class="node">
+      <h3>Linux — systemd & cron (CPU/GPU nodes)</h3>
+      <pre>[Unit]
+Description=Studio Encode Watcher
+After=network.target
+
+[Service]
+User=studio
+ExecStart=/home/studio/bin/encode-watcher.sh
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target</pre>
+
+      <pre>0 */6 * * * /home/studio/bin/backup-recordings.sh >> /var/log/studio/backup.log 2>&1</pre>
+      <p class="small">Пояснение: systemd перезапустит watcher при падении; cron — для регулярного бэкапа.</p>
+    </div>
+
+    <div class="node">
+      <h3>Health check scripts — примеры</h3>
+      <pre>REM Windows health-check.bat (basic)
+@echo off
+timeout /t 2
+powershell -command "Get-Process obs64 -ErrorAction SilentlyContinue | Select-Object Id,CPU"
+powershell -command "Get-ChildItem C:\studio\recordings | Measure-Object -Property Length -Sum"</pre>
+
+      <pre>#!/bin/bash
+# Linux health-check.sh
+free -h
+df -h /studio
+nvidia-smi || echo "no-gpu"
+</pre>
+    </div>
+  </section>
+
+  <section id="checksum">
+    <h2>6. Проверка целостности файлов — MD5 и SHA-256</h2>
+    <p class="small">Инструменты: встроенная проверка в браузере (SHA-256), и команды для Windows PowerShell / Linux CLI.</p>
+
+    <div class="node">
+      <h3>Встроенная проверка в браузере (SHA-256)</h3>
+      <p class="small">Выбери файл и нажми — результат появится в поле. Сравни с ожидаемой суммой.</p>
+      <input type="file" id="file_check_input"/>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="computeSHA()">Посчитать SHA-256</button>
+        <button class="btn" onclick="clearSHA()">Очистить</button>
+      </div>
+      <label>SHA-256:</label><input type="text" id="sha_out" readonly/>
+      <label>Ожидаемая сумма (вставь для проверки):</label><input type="text" id="sha_expect"/>
+      <div style="margin-top:8px;"><button class="btn" onclick="compareSHA()">Сравнить</button> <span id="sha_result" style="font-weight:700;margin-left:8px;"></span></div>
+      <p class="small">Windows PowerShell (example): <kbd class="kbd">Get-FileHash -Algorithm SHA256 C:\studio\recordings\file.mkv</kbd></p>
+      <p class="small">Linux example: <kbd class="kbd">sha256sum file.mkv</kbd></p>
+    </div>
+
+    <script>
+      async function computeSHA(){
+        const inp = document.getElementById('file_check_input');
+        const out = document.getElementById('sha_out');
+        const res = document.getElementById('sha_result');
+        res.textContent='';
+        if(!inp.files || inp.files.length===0){ alert('Выбери файл'); return; }
+        const file = inp.files[0];
+        const buffer = await file.arrayBuffer();
+        const hash = await crypto.subtle.digest('SHA-256', buffer);
+        const hex = Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+        out.value = hex;
+        return hex;
+      }
+      function clearSHA(){ document.getElementById('file_check_input').value=''; document.getElementById('sha_out').value=''; document.getElementById('sha_expect').value=''; document.getElementById('sha_result').textContent=''; }
+      function compareSHA(){
+        const got = document.getElementById('sha_out').value.trim();
+        const exp = document.getElementById('sha_expect').value.trim().toLowerCase();
+        const r = document.getElementById('sha_result');
+        if(!got){ alert('Посчитай SHA-256 сначала'); return; }
+        if(!exp){ alert('Вставь ожидаемую сумму'); return; }
+        if(got === exp){ r.style.color='green'; r.textContent='MATCH (OK)'; } else { r.style.color='red'; r.textContent='MISMATCH (FAIL)'; }
+      }
+    </script>
+
+    <div class="node">
+      <h3>MD5 (legacy)</h3>
+      <p class="small">Команды: Windows PowerShell: <kbd class="kbd">Get-FileHash -Algorithm MD5 file.mkv</kbd>; Linux: <kbd class="kbd">md5sum file.mkv</kbd>.</p>
+    </div>
+  </section>
+
+  <section id="troubleshoot">
+    <h2>7. Troubleshooting — симптомы → причины → решения</h2>
+    <div class="node">
+      <h3>Лаптоп (Windows)</h3>
+      <table><thead><tr><th>Симптом</th><th>Возможная причина</th><th>Что делать</th></tr></thead>
+      <tbody>
+        <tr><td>No preview in OBS</td><td>Capture device not recognized / driver</td><td>Перезапустить устройство, заменить кабель, проверить Device Manager; переустановить драйвер capture.</td></tr>
+        <tr><td>Audio latency / echo</td><td>Wrong buffer size / Exclusive mode</td><td>В OBS уменьшить buffer, отключить exclusive mode в Windows sound settings.</td></tr>
+        <tr><td>Disk overload writes</td><td>Slow HDD / USB2 port</td><td>Switch to NVMe or external USB3 SSD; lower bitrate.</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="node">
+      <h3>Rented CPU (Linux)</h3>
+      <table><thead><tr><th>Симптом</th><th>Возможная причина</th><th>Что делать</th></tr></thead>
+      <tbody>
+        <tr><td>ffmpeg crashes</td><td>Bad codec or corrupted input</td><td>Run ffmpeg with -report, check logs, try rewrap container (ffmpeg -i in.mkv -c copy out.mkv).</td></tr>
+        <tr><td>Scripts not running</td><td>Permissions / wrong shebang</td><td>chmod +x, check /var/log/syslog, systemctl status.</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="node">
+      <h3>Rented GPU (Linux)</h3>
+      <table><thead><tr><th>Симптом</th><th>Возможная причина</th><th>Что делать</th></tr></thead>
+      <tbody>
+        <tr><td>GPU not visible</td><td>Driver crash / PCIe error</td><td>Check dmesg, restart nvidia-persistenced, reinstall driver if needed.</td></tr>
+        <tr><td>Render artifacts</td><td>Memory corruption / overheating</td><td>Lower load, test with different driver, switch to another instance.</td></tr>
+      </tbody></table>
+    </div>
+
+    <div class="node danger">
+      <h3>Critical Recovery — если всё падает</h3>
+      <ol>
+        <li>Останови новые записи и запусти emergency local recording на отдельный диск.</li>
+        <li>Собери логи (Laptop, CPU, GPU), сделай combined JSON лог и MD5/SHA хэши файлов.</li>
+        <li>Если сеть падает — physical transfer: скопируй на внешний SSD и передай на CPU/GPU вручную.</li>
+        <li>Выполни post-mortem: время, шаги восстановления, root cause hypothesis — положи в /studio_docs/postmortem/</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="logs">
+    <h2>8. Журналы (Logs) — формы, экспорт/импорт</h2>
+    <p class="small">Заполняй формы для каждого узла и экспортируй JSON. Сохраняй combined JSON вместе с SHA-256 финального файла.</p>
+
+    <div class="node">
+      <h3>Form — Laptop log</h3>
+      <label>Дата/Время</label><input type="text" id="l_date" value=""/>
+      <label>Title</label><input type="text" id="l_title" placeholder="Например: Test OBS session"/>
+      <label>Notes</label><textarea id="l_notes" class="log-area"></textarea>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="exportLog('laptop')">Export Laptop log</button>
+        <button class="btn" onclick="clearForm('laptop')">Clear</button>
+      </div>
+    </div>
+
+    <div class="node">
+      <h3>Form — CPU log</h3>
+      <label>Дата/Время</label><input type="text" id="c_date" value=""/>
+      <label>Title</label><input type="text" id="c_title" placeholder="Encode batch #1"/>
+      <label>Notes</label><textarea id="c_notes" class="log-area"></textarea>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="exportLog('cpu')">Export CPU log</button>
+        <button class="btn" onclick="clearForm('cpu')">Clear</button>
+      </div>
+    </div>
+
+    <div class="node">
+      <h3>Form — GPU log</h3>
+      <label>Дата/Время</label><input type="text" id="g_date" value=""/>
+      <label>Title</label><input type="text" id="g_title" placeholder="Render job X"/>
+      <label>Notes</label><textarea id="g_notes" class="log-area"></textarea>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="exportLog('gpu')">Export GPU log</button>
+        <button class="btn" onclick="clearForm('gpu')">Clear</button>
+      </div>
+    </div>
+
+    <div class="node">
+      <h3>Form — Hybrid log</h3>
+      <label>Дата/Время</label><input type="text" id="h_date" value=""/>
+      <label>Title</label><input type="text" id="h_title" placeholder="E2E smoke test"/>
+      <label>Notes</label><textarea id="h_notes" class="log-area"></textarea>
+      <div style="margin-top:8px;">
+        <button class="btn" onclick="exportLog('hybrid')">Export Hybrid log</button>
+        <button class="btn" onclick="clearForm('hybrid')">Clear</button>
+        <button class="btn" onclick="downloadAll()">Download combined logs</button>
+        <input type="file" id="import_logs" onchange="importAll(event)"/>
+      </div>
+    </div>
+
+    <div class="node">
+      <h3>Log file template</h3>
+      <pre>{
+  "date":"2025-11-06T12:00:00",
+  "zone":"laptop|cpu|gpu|hybrid",
+  "title":"Short title",
+  "tests": {"t_obs":"PASS","c_ffmpeg":"FAIL"},
+  "notes":"Detailed notes, console output, actions taken",
+  "file":"session_20251106.mkv",
+  "checksum":{"sha256":"..."}
+}</pre>
+    </div>
+  </section>
+
+  <footer>
+    <p class="small">Файл v2.1 создан: ориентирован на Windows laptop + Linux арендуемые ноды. Если хочешь — экспортирую этот HTML в файл и дам ссылку на загрузку. Также могу добавить: автоматическое заполнение timestamps, шаблоны email-уведомлений о падении сервиса, или детальные SVG‑схемы портов. Говори прямо — добавлю.</p>
+  </footer>
+
+<script>
+  // Simple mark PASS visual
+  function mark(id){
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.textContent = 'PASS';
+    el.className = 'pass';
+    localStorage.setItem(id, 'PASS');
+  }
+
+  // Export single log
+  function exportLog(zone){
+    let obj = {date: new Date().toISOString(), zone: zone, title:'', notes:'', tests:{}};
+    if(zone==='laptop'){
+      obj.title = document.getElementById('l_title').value;
+      obj.notes = document.getElementById('l_notes').value;
+    } else if(zone==='cpu'){
+      obj.title = document.getElementById('c_title').value;
+      obj.notes = document.getElementById('c_notes').value;
+    } else if(zone==='gpu'){
+      obj.title = document.getElementById('g_title').value;
+      obj.notes = document.getElementById('g_notes').value;
+    } else if(zone==='hybrid'){
+      obj.title = document.getElementById('h_title').value;
+      obj.notes = document.getElementById('h_notes').value;
+    }
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(obj, null,2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", zone + "_log_" + (new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')) + ".json");
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+  }
+
+  function clearForm(zone){
+    if(zone==='laptop'){ document.getElementById('l_date').value=''; document.getElementById('l_title').value=''; document.getElementById('l_notes').value=''; }
+    if(zone==='cpu'){ document.getElementById('c_date').value=''; document.getElementById('c_title').value=''; document.getElementById('c_notes').value=''; }
+    if(zone==='gpu'){ document.getElementById('g_date').value=''; document.getElementById('g_title').value=''; document.getElementById('g_notes').value=''; }
+    if(zone==='hybrid'){ document.getElementById('h_date').value=''; document.getElementById('h_title').value=''; document.getElementById('h_notes').value=''; }
+  }
+
+  // Combined download
+  function downloadAll(){
+    const all = [];
+    const l = {zone:'laptop',date:document.getElementById('l_date').value||new Date().toISOString(),title:document.getElementById('l_title').value,notes:document.getElementById('l_notes').value};
+    const c = {zone:'cpu',date:document.getElementById('c_date').value||new Date().toISOString(),title:document.getElementById('c_title').value,notes:document.getElementById('c_notes').value};
+    const g = {zone:'gpu',date:document.getElementById('g_date').value||new Date().toISOString(),title:document.getElementById('g_title').value,notes:document.getElementById('g_notes').value};
+    const h = {zone:'hybrid',date:document.getElementById('h_date').value||new Date().toISOString(),title:document.getElementById('h_title').value,notes:document.getElementById('h_notes').value};
+    all.push(l,c,g,h);
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(all, null,2));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "studio_combined_logs_" + (new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')) + ".json");
+    document.body.appendChild(dlAnchor);
+    dlAnchor.click();
+    dlAnchor.remove();
+  }
+
+  function importAll(e){
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev){
+      try{
+        const data = JSON.parse(ev.target.result);
+        if(Array.isArray(data)){
+          data.forEach(item => {
+            if(item.zone==='laptop'){ document.getElementById('l_date').value=item.date||''; document.getElementById('l_title').value=item.title||''; document.getElementById('l_notes').value=item.notes||''; }
+            if(item.zone==='cpu'){ document.getElementById('c_date').value=item.date||''; document.getElementById('c_title').value=item.title||''; document.getElementById('c_notes').value=item.notes||''; }
+            if(item.zone==='gpu'){ document.getElementById('g_date').value=item.date||''; document.getElementById('g_title').value=item.title||''; document.getElementById('g_notes').value=item.notes||''; }
+            if(item.zone==='hybrid'){ document.getElementById('h_date').value=item.date||''; document.getElementById('h_title').value=item.title||''; document.getElementById('h_notes').value=item.notes||''; }
+          });
+          alert('Импорт завершён');
+        } else {
+          alert('Ожидается массив логов (combined JSON)');
+        }
+      }catch(err){ alert('Ошибка парсинга JSON: '+err.message); }
+    };
+    reader.readAsText(file);
+  }
+
+  // web crypto for sha already defined in section
+  function noop(){}
+
+  // restore PASS marks
+  window.addEventListener('load', ()=>{
+    ['t_obs','t_audio','t_disk','t_upload','c_ssh','c_disk','c_ffmpeg','c_trans','g_smi','g_render','g_nvenc','g_temp'].forEach(id=>{
+      if(localStorage.getItem(id)==='PASS'){
+        const el = document.getElementById(id);
+        if(el){ el.textContent='PASS'; el.className='pass'; }
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

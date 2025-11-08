@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Студия — уровень 3 — Полная структура и задачи</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:Arial,Helvetica,sans-serif;line-height:1.45;color:#111;padding:24px;max-width:980px;margin:auto;background:#fff}
+h1{font-size:24px;margin-bottom:6px}
+h2{font-size:18px;margin-top:22px}
+pre{background:#f6f6f6;padding:12px;border-radius:6px;overflow:auto}
+table{border-collapse:collapse;width:100%;margin-top:8px}
+td,th{border:1px solid #ddd;padding:8px;text-align:left;vertical-align:top}
+th{background:#f3f3f3}
+.note{background:#fff8e1;padding:10px;border-left:4px solid #f0c000;margin:12px 0}
+.small{font-size:13px;color:#555}
+</style>
+</head>
+<body>
+<h1>Студия — уровень 3 — Полная структура и задачи</h1>
+<p class="small">Обновлено: добавлены детализированные таблицы компонентов и задач для продвинутого уровня (Level 3) на основе всех данных, зафиксированных в Efficient Studio v2.6 и последующих обсуждениях.</p>
+
+<h2>1. Основные модули уровня 3</h2>
+<table>
+<tr><th>Блок</th><th>Подблоки / Компоненты</th><th>Назначение</th><th>Комментарии / Статус</th></tr>
+
+<tr><td><strong>1. Orchestration &amp; Agents</strong></td>
+<td>
+<ul>
+<li>Task Manager</li>
+<li>Process Orchestrator</li>
+<li>Automation Agents</li>
+<li>Scheduler Integration</li>
+</ul>
+</td>
+<td>Автоматизация и управление рабочими процессами; координация агентов, генераторов и QC модулей.</td>
+<td>Базовый каркас готов, требуется добавить визуальный контроль в GUI.</td></tr>
+
+<tr><td><strong>2. Multilingual Support</strong></td>
+<td>
+<ul>
+<li>Language Orchestration Module</li>
+<li>Translation Engine (Text + Subtitles)</li>
+<li>Voice &amp; Speech Layer (TTS, AI-озвучка)</li>
+<li>Subtitles &amp; Captions Generator</li>
+<li>Multilingual GUI Layer</li>
+<li>Analytics Integration</li>
+<li>Translation Workflow Dashboard</li>
+</ul>
+</td>
+<td>Многоязычная поддержка продакшна — перевод, субтитры, озвучка, синхронизация, контроль качества перевода.</td>
+<td>Реализован концепт; интеграция с Production Control Layer в стадии подготовки.</td></tr>
+
+<tr><td><strong>3. Production Control Layer</strong></td>
+<td>
+<ul>
+<li>Segment Quality Control System</li>
+<li>Fragment QC (≤30s Rule)</li>
+<li>Batch Management</li>
+<li>Final Combined Review</li>
+<li>Operator Notes System</li>
+</ul>
+</td>
+<td>Контроль качества фрагментов и финального ролика. Проверка сцен ≤30 секунд, ведение журналов и заметок.</td>
+<td>Используется для внутренних тестов; нуждается в связке с Analytics и GUI.</td></tr>
+
+<tr><td><strong>4. GUI Control Panel</strong></td>
+<td>
+<ul>
+<li>Dashboard View</li>
+<li>QC Table (HTML)</li>
+<li>Task Manager UI</li>
+<li>Operator Comment Layer</li>
+<li>Live Preview Window</li>
+</ul>
+</td>
+<td>Управление студией, QC, переводами и агентами. Визуальный контроль процессов и доступ к аналитике.</td>
+<td>Планируется расширение до интерактивного HTML-интерфейса с возможностью экспорта таблиц.</td></tr>
+
+<tr><td><strong>5. Local GPU Node</strong></td>
+<td>
+<ul>
+<li>Render Node Control</li>
+<li>Load Balancer</li>
+<li>GPU Resource Monitor</li>
+</ul>
+</td>
+<td>Использование локальных GPU для ускоренной генерации видео и AI-процессов.</td>
+<td>Рабочая концепция — требуется синхронизация с Cloud Storage.</td></tr>
+
+<tr><td><strong>6. Cloud Storage</strong></td>
+<td>
+<ul>
+<li>Sync Manager</li>
+<li>Versioned Backups</li>
+<li>Asset Management API</li>
+</ul>
+</td>
+<td>Облачное хранилище для видео, изображений, звука, субтитров и метаданных.</td>
+<td>Реализовать интеграцию с GUI для просмотра и загрузки ресурсов.</td></tr>
+
+<tr><td><strong>7. Audio Layer</strong></td>
+<td>
+<ul>
+<li>TTS Engine</li>
+<li>Audio Mix &amp; Sync</li>
+<li>Noise Reduction</li>
+<li>Multi-language Dubbing</li>
+</ul>
+</td>
+<td>Звук, озвучка, микширование и синхронизация.</td>
+<td>Базовые тесты пройдены, интеграция с Multilingual в разработке.</td></tr>
+
+<tr><td><strong>8. Analytics &amp; Performance Dashboard</strong></td>
+<td>
+<ul>
+<li>Data Metrics</li>
+<li>Translation Quality Index</li>
+<li>Rendering Speed Monitor</li>
+<li>Agent Efficiency Chart</li>
+</ul>
+</td>
+<td>Аналитика производительности, контроль качества перевода и загрузки системы.</td>
+<td>Работает частично; необходимо внедрить реальную телеметрию.</td></tr>
+
+</table>
+
+<h2>2. Таблица текущих задач уровня 3</h2>
+<table>
+<tr><th>ID</th><th>Задача</th><th>Приоритет</th><th>Статус</th><th>Комментарии</th></tr>
+<tr><td>3-01</td><td>Интеграция GUI Control Panel с Orchestration &amp; Agents</td><td>Высокий</td><td>Планируется</td><td>Для визуального контроля задач агентов и процессов.</td></tr>
+<tr><td>3-02</td><td>Добавить QC Table (HTML-таблицы с элементами второго этапа)</td><td>Высокий</td><td>В работе</td><td>Реакция на запрос «Выведи на экран всё, что добавлю во втором этапе».</td></tr>
+<tr><td>3-03</td><td>Связать Segment QC с Analytics Dashboard</td><td>Средний</td><td>Ожидает данных</td><td>Передача статусов проверки и оценок качества.</td></tr>
+<tr><td>3-04</td><td>Интеграция Multilingual с Audio Layer</td><td>Высокий</td><td>В работе</td><td>Синхронизация перевода, субтитров и звука.</td></tr>
+<tr><td>3-05</td><td>Настроить Cloud Storage автосинхронизацию с локальным GPU Node</td><td>Средний</td><td>Не начато</td><td>Обеспечить гибридный рабочий процесс.</td></tr>
+<tr><td>3-06</td><td>Создать Translation Workflow Dashboard</td><td>Средний</td><td>В разработке</td><td>Визуализация статусов перевода и субтитров.</td></tr>
+<tr><td>3-07</td><td>Подключить Performance Dashboard к реальным метрикам</td><td>Низкий</td><td>Планируется</td><td>Сбор статистики работы GPU, агентов и QC.</td></tr>
+<tr><td>3-08</td><td>Внедрить Operator Notes System в общий GUI</td><td>Средний</td><td>В работе</td><td>Добавление заметок и наблюдений операторов.</td></tr>
+<tr><td>3-09</td><td>Добавить демо-режим для презентаций без доступа к конфигурации</td><td>Низкий</td><td>Планируется</td><td>На основе пожеланий из логов («демо-доступ без доступа к конфигу»).</td></tr>
+<tr><td>3-10</td><td>Определить лимиты изображений и ресурсов для Level 3</td><td>Средний</td><td>Ожидает</td><td>Уточнение лимитов — запрос «лимит изображений вичерпав».</td></tr>
+</table>
+
+<h2>3. Обзор интеграций</h2>
+<ul>
+<li><strong>GUI ↔ Orchestration</strong>: управление задачами, статусы, лог.</li>
+<li><strong>QC ↔ Analytics</strong>: передача данных о проверках и отклонениях.</li>
+<li><strong>Audio ↔ Multilingual</strong>: синхронизация озвучки и субтитров.</li>
+<li><strong>GPU Node ↔ Cloud Storage</strong>: двусторонняя синхронизация ресурсов.</li>
+<li><strong>Operator Notes ↔ Dashboard</strong>: отображение комментариев QC.</li>
+</ul>
+
+<h2>4. Вывод</h2>
+<p>Всё, что есть на данный момент, собрано честно и без приукрашивания. Уровень 3 — это уже продвинутый слой управления и автоматизации, включающий оркестрацию, мульти-язычную поддержку, контроль качества, интеграцию GPU/облака и аналитику.</p>
+
+</body>
+</html>
