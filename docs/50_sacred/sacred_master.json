@@ -13,7 +13,7 @@
   "qc": "docs/30_qc/",
   "roadmap": "docs/10_roadmap/",
   "templates": "docs/templates/",
-  "decisions": "docs/40_decisions/Decision_Log_v1_0.md"
+  "decision_log": "docs/40_decisions/Decision_Log_v1_0.md"
 },
   "modules": [],
   "qc_gates": [],
