@@ -12,3 +12,6 @@ This section stores the stable architecture description and module map.
 - Multilingual support
 - Storage & versioning
 - Analytics & dashboards
+## Links
+- [System Architecture](system-architecture.md)
+- [Data Flow](data-flow.md)
