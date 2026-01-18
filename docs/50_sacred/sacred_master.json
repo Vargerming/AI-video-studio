@@ -7,13 +7,7 @@
     "decision_log": "docs/40_decisions/Decision_Log_v1_0.md",
     "no_secrets": true,
     "one_intent_per_commit": true
-  },
-  "core_links": {
-    "architecture": "docs/20_architecture/",
-    "qc": "docs/30_qc/",
-    "roadmap": "docs/10_roadmap/",
-    "templates": "docs/templates/"
-  },
+
   "core_links": {
   "architecture": "docs/20_architecture/",
   "qc": "docs/30_qc/",
