@@ -18,3 +18,6 @@ FAIL if:
 - severe artifacts
 - wrong language/voice
 - continuity breaks that affect meaning
+## Links
+- [QC Standard](system-qc.md)
+- [Pass/Fail Matrix](pass-fail-matrix.md)
